@@ -25,7 +25,7 @@
 - name: Creating symlink to Go Metalinter
   become: true
   file:
-    src: /opt/gometalinter/gometalinter-{{ gometalinter_version }}/bin/gometalinter
+    src: /opt/gometalinter/gometalinter-{{ gometalinter_version }}/gometalinter
     dest: /usr/local/bin/gometalinter
     owner: root
     group: root
