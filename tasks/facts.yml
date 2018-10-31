@@ -1,0 +1,25 @@
+---
+- name: Get Go Metalinter release info
+  become: false
+  uri:
+    url: https://api.github.com/repos/alecthomas/gometalinter/releases/latest
+    headers:
+      Accept: 'application/vnd.github.v3+json'
+    return_content: yes
+  register: gometalinter_release_info
+  changed_when: false
+
+- name: Get Available Go Metalinter Version
+  become: false
+  set_fact:
+    gometalinter_version: "{{ gometalinter_release_info.json.tag_name | regex_search('\\d+\\.\\d+\\.\\d+') }}"
+  changed_when: false
+
+- name: Set Go Metalinter Download URL
+  become: false
+  vars:
+    linux_tarball_query: "assets[?name=='gometalinter-{{ gometalinter_version }}-linux-amd64.tar.gz'].browser_download_url"
+  set_fact:
+    gometalinter_download_url: "{{ gometalinter_release_info.json | json_query(linux_tarball_query) | first }}"
+  changed_when: false
+

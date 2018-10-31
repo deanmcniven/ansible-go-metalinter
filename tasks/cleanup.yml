@@ -1,0 +1,20 @@
+---
+- name: Old Go Metalinter Identifier
+  become: true
+  find:
+    paths: /opt/gometalinter
+    pattern: "gometalinter-\\d+\\.\\d+\\.\\d+$"
+    recurse: no
+    file_type: directory
+    use_regex: yes
+    excludes: "gometalinter-{{ gometalinter_version }}"
+  register: gometalinter_old_installations
+
+- name: Delete Old Go Metadata Installations
+  become: true
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ gometalinter_old_installations.files }}"
+  when: gometalinter_old_installations.matched != 0
+
